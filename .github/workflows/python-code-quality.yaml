@@ -1,0 +1,36 @@
+name: Python code quality
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.py'
+
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.py'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks-format-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        - name: Set up Python 3
+          uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+          with:
+            python-version: "3.12"
+            cache: 'pip'
+        - name: Install dependencies
+          run: |
+            python3 -m pip install --upgrade pip
+            python3 -m pip install ruff
+        - name: Lint with ruff
+          run: ruff check .
+        - name: Check formatting with ruff
+          run: ruff format . --check
